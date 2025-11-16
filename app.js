@@ -4,36 +4,46 @@ const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const connectDB = require("./config/database");
+
 const app = express();
-const PORT = process.env.PORT 
+const PORT = process.env.PORT;
+
 const profileRoutes = require("./routes/profileRoutes");
 const hybRoutes = require("./routes/hybRoutes");
-const corsOptions = {
-  origin: ["https://v00-04.vercel.app"],
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
-  allowedHeaders: [
-    "Content-Type",
-    "Authorization",
-    "Accept",
-    "X-Requested-With"
-  ],
-  credentials: true,
-  optionsSuccessStatus: 200
-};
+const userRoutes = require("./routes/userRoutes");
+const authRoutes = require("./routes/authRoutes");
 
+// Allowed origins
+const allowedOrigins = [
+  "https://v00-04.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:3000"
+];
 
+// Middleware
+app.use(helmet()); // همیشه اول
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like curl or Postman)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      return callback(new Error("Not allowed by CORS"));
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Accept", "X-Requested-With"],
+    credentials: true,
+    optionsSuccessStatus: 200
+  })
+);
+
+// Enable preflight for all routes
+app.options("*", cors());
 
 // Connect to database
 connectDB();
 
-// Import routes
-const userRoutes = require("./routes/userRoutes");
-const authRoutes = require("./routes/authRoutes");
-
-// Middleware
-app.use(helmet());
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
+// Other middleware
 app.use(morgan("combined"));
 app.use(express.json());
 
@@ -42,6 +52,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/hyb", hybRoutes);
+
 // Root route
 app.get("/", (req, res) => {
   res.json({
@@ -67,7 +78,7 @@ app.get("/", (req, res) => {
   });
 });
 
-// Health check route
+// Health check
 app.get("/health", (req, res) => {
   res.status(200).json({
     status: "✅ OK",
@@ -81,41 +92,25 @@ app.get("/api/debug/users", async (req, res) => {
   try {
     const User = require("./models/User");
     const users = await User.find();
-
     console.log("🔍 All users in database:", users);
-
-    res.json({
-      success: true,
-      count: users.length,
-      data: users,
-    });
+    res.json({ success: true, count: users.length, data: users });
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
-// 404 error handling
-app.use((req, res, next) => {
-  res.status(404).json({
-    success: false,
-    error: "Route not found",
-  });
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ success: false, error: "Route not found" });
 });
 
-// Server error handling
+// Server error handler
 app.use((err, req, res, next) => {
   console.error("❌ Server error:", err.stack);
-  res.status(500).json({
-    success: false,
-    error: "Internal server error",
-  });
+  res.status(500).json({ success: false, error: "Internal server error" });
 });
 
 // Start server
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
-  
 });
