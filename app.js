@@ -5,7 +5,7 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const connectDB = require("./config/database");
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT 
 const profileRoutes = require("./routes/profileRoutes");
 const hybRoutes = require("./routes/hybRoutes");
 const corsOptions = {
@@ -117,5 +117,5 @@ app.use((err, req, res, next) => {
 // Start server
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
-  console.log(`📊 Admin panel: http://localhost:${PORT}`);
+  
 });
