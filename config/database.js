@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const connectDB = async () => {
   try {
     // از متغیر محیطی استفاده کنید یا مستقیماً قرار دهید
-    const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://raad-health-admin:password@cluster0.xxxxx.mongodb.net/raadHealth?retryWrites=true&w=majority';
+    const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://alisabouri6857_db_user:EFASN5oRmegukgRo@cluster0.w6lfdrn.mongodb.net/raadHealth?retryWrites=true&w=majority';
     
     const conn = await mongoose.connect(MONGODB_URI, {
       useNewUrlParser: true,
