@@ -8,6 +8,20 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const profileRoutes = require("./routes/profileRoutes");
 const hybRoutes = require("./routes/hybRoutes");
+const corsOptions = {
+  origin: ["https://v00-04.vercel.app"],
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "Accept",
+    "X-Requested-With"
+  ],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+
 
 // Connect to database
 connectDB();
@@ -18,17 +32,8 @@ const authRoutes = require("./routes/authRoutes");
 
 // Middleware
 app.use(helmet());
-app.use(
-  cors({
-    origin: "https://v00-04.vercel.app", // فقط اجازه بده به front
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  })
-);
-
-// لازم برای preflight
-app.options("*", cors());
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(morgan("combined"));
 app.use(express.json());
 
