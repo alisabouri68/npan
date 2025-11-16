@@ -18,7 +18,17 @@ const authRoutes = require("./routes/authRoutes");
 
 // Middleware
 app.use(helmet());
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://v00-04.vercel.app", // فقط اجازه بده به front
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+
+// لازم برای preflight
+app.options("*", cors());
 app.use(morgan("combined"));
 app.use(express.json());
 
