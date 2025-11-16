@@ -7,7 +7,7 @@ const sendVerificationEmail = async (email, verificationToken) => {
   try {
     console.log('📧 در حال ارسال ایمیل تأیید به:', email);
     
-    const verificationUrl = `http://localhost:5173/verify-success?token=${verificationToken}`;
+    const verificationUrl = `http://localhost:4000/verify-success?token=${verificationToken}`;
     
     console.log('🔗 لینک تأیید:', verificationUrl);
     
@@ -23,8 +23,8 @@ const sendVerificationEmail = async (email, verificationToken) => {
           <style>
             body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
             .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: #4F46E5; color: white; padding: 20px; text-align: center; }
-            .button { background: #4F46E5; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; }
+            .header { background: #1D9EBD; color: #ffffff; padding: 20px; text-align: center; }
+            .button { background: #1D9EBD; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; }
           </style>
         </head>
         <body>
